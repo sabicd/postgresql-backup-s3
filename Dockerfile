@@ -1,9 +1,8 @@
-FROM alpine:3.9
+FROM postgres:12-alpine
 LABEL maintainer="ITBM"
 
 RUN apk update \
 	&& apk add coreutils \
-	&& apk add postgresql-client \
 	&& apk add python py2-pip && pip install awscli && apk del py2-pip \
 	&& apk add openssl \
 	&& apk add curl \
@@ -23,12 +22,14 @@ ENV S3_BUCKET **None**
 ENV S3_REGION us-west-1
 ENV S3_PREFIX 'backup'
 ENV S3_ENDPOINT **None**
+ENV S3_CP_ARGS **None**
 ENV S3_S3V4 no
 ENV SCHEDULE **None**
 ENV ENCRYPTION_PASSWORD **None**
 ENV DELETE_OLDER_THAN **None**
-
 ADD run.sh run.sh
 ADD backup.sh backup.sh
+RUN pg_dump --version
+RUN apk --update add postgresql-client
 
 CMD ["sh", "run.sh"]

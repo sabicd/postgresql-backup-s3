@@ -51,6 +51,12 @@ else
   AWS_ARGS="--endpoint-url ${S3_ENDPOINT}"
 fi
 
+if [ "${S3_CP_ARGS}" == "**None**" ]; then
+  S3_CP_ARGS=""
+else
+  S3_CP_ARGS="${S3_CP_ARGS}"
+fi
+
 # env vars needed for aws tools
 export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
@@ -78,8 +84,7 @@ if [ "${ENCRYPTION_PASSWORD}" != "**None**" ]; then
 fi
 
 echo "Uploading dump to $S3_BUCKET"
-
-cat $SRC_FILE | aws $AWS_ARGS s3 cp - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE || exit 2
+cat $SRC_FILE | aws $AWS_ARGS s3 cp $S3_CP_ARGS - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE || exit 2
 
 if [ "${DELETE_OLDER_THAN}" != "**None**" ]; then
   >&2 echo "Checking for files older than ${DELETE_OLDER_THAN}"
