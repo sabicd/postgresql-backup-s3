@@ -75,7 +75,7 @@ spec:
 - `S3_BUCKET` your AWS S3 bucket path *required*
 - `S3_PREFIX` path prefix in your bucket (default: 'backup')
 - `S3_REGION` the AWS S3 bucket region (default: us-west-1)
-- `S3_ENDPOINT` the AWS Endpoint URL, for S3 Compliant APIs such as [minio](https://minio.io) (default: none)
+- `S3_CP_ARGS` the arguments that will be passed to the aws s3 cp command. (default: '')
 - `S3_S3V4` set to `yes` to enable AWS Signature Version 4, required for [minio](https://minio.io) servers (default: no)
 - `SCHEDULE` backup schedule time, see explainatons below
 - `ENCRYPTION_PASSWORD` password to encrypt the backup. Can be decrypted using `openssl aes-256-cbc -d -in backup.sql.gz.enc -out backup.sql.gz`

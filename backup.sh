@@ -72,19 +72,9 @@ DEST_FILE=${POSTGRES_DATABASE}_$(date +"%Y-%m-%dT%H:%M:%SZ").sql.gz
 
 pg_dump $POSTGRES_HOST_OPTS $POSTGRES_DATABASE | gzip > $SRC_FILE
 
-if [ "${ENCRYPTION_PASSWORD}" != "**None**" ]; then
-  >&2 echo "Encrypting ${SRC_FILE}"
-  openssl enc -aes-256-cbc -in $SRC_FILE -out ${SRC_FILE}.enc -k $ENCRYPTION_PASSWORD
-  if [ $? != 0 ]; then
-    >&2 echo "Error encrypting ${SRC_FILE}"
-  fi
-  rm $SRC_FILE
-  SRC_FILE="${SRC_FILE}.enc"
-  DEST_FILE="${DEST_FILE}.enc"
-fi
 
 echo "Uploading dump to $S3_BUCKET"
-cat $SRC_FILE | aws $AWS_ARGS s3 cp $S3_CP_ARGS - s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE || exit 2
+aws $AWS_ARGS s3 cp $S3_CP_ARGS $SRC_FILE s3://$S3_BUCKET/$S3_PREFIX/$DEST_FILE || exit 2
 
 if [ "${DELETE_OLDER_THAN}" != "**None**" ]; then
   >&2 echo "Checking for files older than ${DELETE_OLDER_THAN}"
