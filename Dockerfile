@@ -1,5 +1,4 @@
 FROM postgres:12-alpine
-LABEL maintainer="ITBM"
 
 RUN apk update \
 	&& apk add coreutils \
